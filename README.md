@@ -10,7 +10,7 @@ Optional packages:
   - timeit (Manual timing of different stages of the script)
 
 LCS Spring 2021:
-   1. Completely does 2-6 way ties, including SOVs where needed for side selection order.
+   1. Completely does 2-6 way ties, including SOVs where needed for side selection order. 7-10 way ties are calculated but not in SOV order.
    2. Outputs Foldy Sheet to an .xlsx file
    3. Outputs lists/arrays indicating the following:
         - Teams chances of ending in Nth place with no tiebreaker games played. 
@@ -19,4 +19,5 @@ LCS Spring 2021:
         - Teams chances of finishing in the worst place possible in tiebreakers (Used to determine if X team has locked certain spots
         
 LCS Summer 2021:
-    1. In Progress.
+    1. Currently only does 2-3 way ties completely. 
+    2. WIP
