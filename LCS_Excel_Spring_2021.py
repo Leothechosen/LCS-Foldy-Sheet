@@ -22,6 +22,7 @@ Multiway_tie_unresolved_end = workbook.add_format({'bottom' : 2, 'top' : 2, 'rig
 
 Multiway_tie_unresolved_begin_tied_SOV = workbook.add_format({'bottom': 2, 'top': 2, 'left' : 2, 'bg_color': 'lime', 'italic': True})
 Multiway_tie_unresolved_middle_tied_SOV = workbook.add_format({'bottom': 2, 'top' : 2, 'bg_color': 'lime', 'italic': True})
+Multiway_tie_unresolved_middle_new_tied_SOV = workbook.add_format({'bottom' : 2, 'top' : 2, 'left': 2, 'bg_color': '#00FFFF', 'italic': True})
 Multiway_tie_unresolved_end_tied_SOV = workbook.add_format({'bottom' : 2, 'top' : 2, 'right': 2, 'bg_color': 'lime', 'italic': True})
 
 Multiway_tie_partially_resolved_begin = workbook.add_format({'bottom' : 2, 'top' : 2, 'left' : 2, 'bg_color': '#00FFFF'})
@@ -533,14 +534,22 @@ for scenario in outcomes:
                     row_data.append([col, team_3, Multiway_tie_unresolved_middle])
                     col += 1
                     row_data.append([col, team_4, Multiway_tie_unresolved_end])
-                elif team_1_sov == team_2_sov == team_3_sov == team_4_sov:
-                    row_data.append([col, team_1, Multiway_tie_unresolved_begin_tied_SOV])
+                elif team_1_sov > team_2_sov > team_3_sov == team_4_sov:
+                    row_data.append([col, team_1, Multiway_tie_unresolved_begin])
+                    col += 1
+                    row_data.append([col, team_2, Multiway_tie_unresolved_middle])
+                    col += 1
+                    row_data.append([col, team_3, Multiway_tie_unresolved_middle_tied_SOV])
+                    col += 1
+                    row_data.append([col, team_4, Multiway_tie_unresolved_end_tied_SOV])
+                elif team_1_sov > team_2_sov == team_3_sov > team_4_sov:
+                    row_data.append([col, team_1, Multiway_tie_unresolved_begin])
                     col += 1
                     row_data.append([col, team_2, Multiway_tie_unresolved_middle_tied_SOV])
                     col += 1
                     row_data.append([col, team_3, Multiway_tie_unresolved_middle_tied_SOV])
                     col += 1
-                    row_data.append([col, team_4, Multiway_tie_unresolved_end_tied_SOV])
+                    row_data.append([col, team_4, Multiway_tie_unresolved_end])
                 elif team_1_sov > team_2_sov == team_3_sov == team_4_sov:
                     row_data.append([col, team_1, Multiway_tie_unresolved_begin])
                     col += 1
@@ -549,10 +558,34 @@ for scenario in outcomes:
                     row_data.append([col, team_3, Multiway_tie_unresolved_middle_tied_SOV])
                     col += 1
                     row_data.append([col, team_4, Multiway_tie_unresolved_end_tied_SOV])
-                elif team_1_sov > team_2_sov > team_3_sov == team_4_sov:
-                    row_data.append([col, team_1, Multiway_tie_unresolved_begin])
+                elif team_1_sov == team_2_sov > team_3_sov > team_4_sov:
+                    row_data.append([col, team_1, Multiway_tie_unresolved_begin_tied_SOV])
                     col += 1
-                    row_data.append([col, team_2, Multiway_tie_unresolved_middle])
+                    row_data.append([col, team_2, Multiway_tie_unresolved_middle_tied_SOV])
+                    col += 1
+                    row_data.append([col, team_3, Multiway_tie_unresolved_middle])
+                    col +1 
+                    row_data.append([col, team_4, Multiway_tie_unresolved_end])
+                elif team_1_sov == team_2_sov > team_3_sov == team_4_sov: 
+                    row_data.append([col, team_1, Multiway_tie_unresolved_begin_tied_SOV])
+                    col += 1
+                    row_data.append([col, team_2, Multiway_tie_unresolved_middle_tied_SOV])
+                    col += 1
+                    row_data.append([col, team_3, Multiway_tie_unresolved_middle_new_tied_SOV])
+                    col += 1
+                    row_data.append([col, team_4, Multiway_tie_unresolved_end_tied_SOV])
+                elif team_1_sov == team_2_sov == team_3_sov > team_4_sov:
+                    row_data.append([col, team_1, Multiway_tie_unresolved_begin_tied_SOV])
+                    col += 1
+                    row_data.append([col, team_2, Multiway_tie_unresolved_middle_tied_SOV])
+                    col += 1
+                    row_data.append([col, team_3, Multiway_tie_unresolved_middle_tied_SOV])
+                    col += 1
+                    row_data.append([col, team_4, Multiway_tie_unresolved_end])
+                elif team_1_sov == team_2_sov == team_3_sov == team_4_sov:
+                    row_data.append([col, team_1, Multiway_tie_unresolved_begin_tied_SOV])
+                    col += 1
+                    row_data.append([col, team_2, Multiway_tie_unresolved_middle_tied_SOV])
                     col += 1
                     row_data.append([col, team_3, Multiway_tie_unresolved_middle_tied_SOV])
                     col += 1
