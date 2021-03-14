@@ -232,7 +232,7 @@ for scenario in outcomes:
             team_1_sov = teams_sov[0]
             team_2_sov = teams_sov[1]
             two_way_ties += 1
-            if ordinal == 2 or ordinal >= 6: # In the spring split, if there is a 2 way tie for 3rd, both teams are considered the #3 seed, and therefore no tiebreaker games are needed. Check for 2-0 H2h anyway
+            if ordinal >= 6: # Ties that don't effect seeding for playoffs are not played out, therefore no tiebreaker games are needed. Check for 2-0 H2h anyway
                 if team_1_aggregate == [2, 0] or team_1_aggregate == [1, 1]:
                     row_data.append([col, team_1, two_way_tie_resolved_start]) 
                     col += 1
@@ -320,170 +320,89 @@ for scenario in outcomes:
                 team_1_sov = sorted_teams_sov_dict[team_1]
                 team_2_sov = sorted_teams_sov_dict[team_2]
                 team_3_sov = sorted_teams_sov_dict[team_3]
-                if ordinal == 2:  #If playing for 3rd in the Spring Split, only the lowest SOV match happens. The team with the highest SOV is automatically considered tied for 3rd with the winner of the lowest SOV match.
-                    tiebreaker_games += 1
-                    if team_1_sov > team_2_sov > team_3_sov:
-                        teams_chances_no_tie[team_1][ordinal] += 1
-                        teams_chances_tie[team_2][ordinal+1] += 1
-                        teams_chances_tie[team_3][ordinal+1] += 1
-                        teams_worst_finish_in_ties[team_2][ordinal+2] += 1
-                        teams_worst_finish_in_ties[team_3][ordinal+2] += 1
-                        row_data.append([col, team_1, Multiway_tie_partially_resolved_begin_locked])
-                        col += 1
-                        row_data.append([col, team_2, Multiway_tie_partially_resolved_middle])
-                        col += 1
-                        row_data.append([col, team_3, Multiway_tie_partially_resolved_end])
-                    elif team_1_sov > team_2_sov == team_3_sov:
-                        teams_chances_no_tie[team_1][ordinal] += 1
-                        teams_chances_tie[team_2][ordinal+1] += 1
-                        teams_chances_tie[team_3][ordinal+1] += 1
-                        teams_worst_finish_in_ties[team_2][ordinal+2] += 1
-                        teams_worst_finish_in_ties[team_3][ordinal+2] += 1
-                        row_data.append([col, team_1, Multiway_tie_partially_resolved_begin_locked])
-                        col += 1
-                        row_data.append([col, team_2, Multiway_tie_partially_resolved_middle_tied_SOV])
-                        col += 1
-                        row_data.append([col, team_3, Multiway_tie_partially_resolved_end_tied_SOV])
-                    elif team_1_sov == team_2_sov > team_3_sov:
-                        teams_chances_unknown[team_1][ordinal] += 1
-                        teams_chances_unknown[team_2][ordinal] += 1
-                        teams_chances_tie[team_3][ordinal+1] += 1
-                        teams_worst_finish_in_ties[team_1][ordinal+2] += 1
-                        teams_worst_finish_in_ties[team_2][ordinal+2] += 1
-                        teams_worst_finish_in_ties[team_3][ordinal+2] += 1
-                        row_data.append([col, team_1, Multiway_tie_partially_resolved_begin_tied_SOV])
-                        col += 1
-                        row_data.append([col, team_2, Multiway_tie_partially_resolved_middle_tied_SOV])
-                        col += 1
-                        row_data.append([col, team_3, Multiway_tie_partially_resolved_end])
-                    elif team_1_sov == team_2_sov == team_3_sov:
-                        teams_chances_unknown[team_1][ordinal] += 1
-                        teams_chances_unknown[team_2][ordinal] += 1
-                        teams_chances_unknown[team_3][ordinal] += 1
-                        teams_worst_finish_in_ties[team_1][ordinal+2] += 1
-                        teams_worst_finish_in_ties[team_2][ordinal+2] += 1
-                        teams_worst_finish_in_ties[team_3][ordinal+2] += 1
-                        row_data.append([col, team_1, Multiway_tie_partially_resolved_begin_tied_SOV])
-                        col += 1
-                        row_data.append([col, team_2, Multiway_tie_partially_resolved_middle_tied_SOV])
-                        col += 1
-                        row_data.append([col, team_3, Multiway_tie_partially_resolved_end_tied_SOV])
-                else:
-                    teams_chances_tie[team_1][ordinal] += 1
-                    teams_chances_tie[team_2][ordinal] += 1
-                    teams_chances_tie[team_3][ordinal] += 1
-                    teams_worst_finish_in_ties[team_1][ordinal+2] += 1
-                    teams_worst_finish_in_ties[team_2][ordinal+2] += 1
-                    teams_worst_finish_in_ties[team_3][ordinal+2] += 1
-                    tiebreaker_games += 2
-                    if team_1_sov > team_2_sov > team_3_sov:
-                        row_data.append([col, team_1, Multiway_tie_unresolved_begin])
-                        col += 1
-                        row_data.append([col, team_2, Multiway_tie_unresolved_middle])
-                        col += 1
-                        row_data.append([col, team_3, Multiway_tie_unresolved_end])
-                    elif team_1_sov > team_2_sov == team_3_sov:
-                        row_data.append([col, team_1, Multiway_tie_unresolved_begin])
-                        col += 1
-                        row_data.append([col, team_2, Multiway_tie_unresolved_middle_tied_SOV])
-                        col += 1
-                        row_data.append([col, team_3, Multiway_tie_unresolved_end_tied_SOV])
-                    elif team_1_sov == team_2_sov > team_3_sov:
-                        row_data.append([col, team_1, Multiway_tie_unresolved_begin_tied_SOV])
-                        col += 1
-                        row_data.append([col, team_2, Multiway_tie_unresolved_middle_tied_SOV])
-                        col += 1
-                        row_data.append([col, team_3, Multiway_tie_unresolved_end])
-                    elif team_1_sov == team_2_sov == team_3_sov:
-                        row_data.append([col, team_1, Multiway_tie_unresolved_begin_tied_SOV])
-                        col += 1
-                        row_data.append([col, team_2, Multiway_tie_unresolved_middle_tied_SOV])
-                        col += 1
-                        row_data.append([col, team_3, Multiway_tie_unresolved_end_tied_SOV])   
-            elif teams_aggs == [[3, 1], [2, 2], [1, 3]]: # Scenario 2: If the teams have a 3-1, 2-2, and 1-3 aggregate, it's an unresolved 3 way tie requiring 2 tiebreaker games.
-                if ordinal == 2: #If playing for 3rd in the Spring Split, only the match between the 2-2 and 1-3 teams happen. The 3-1 team is considered automatically tied for 3rd
-                    teams_chances_no_tie[team_1][ordinal] += 1
-                    teams_chances_tie[team_2][ordinal+1] += 1
-                    teams_chances_tie[team_3][ordinal+1] += 1
-                    teams_worst_finish_in_ties[team_2][ordinal+2] += 1
-                    teams_worst_finish_in_ties[team_2][ordinal+2] += 1
-                    tiebreaker_games += 1
-                    row_data.append([col, team_1, Multiway_tie_partially_resolved_begin_locked])
-                    col += 1
-                    row_data.append([col, team_2, Multiway_tie_partially_resolved_middle])
-                    col += 1
-                    row_data.append([col, team_3, Multiway_tie_partially_resolved_end])
-                else:
-                    teams_chances_tie[team_1][ordinal] += 1
-                    teams_chances_tie[team_2][ordinal] += 1
-                    teams_chances_tie[team_3][ordinal] += 1
-                    teams_worst_finish_in_ties[team_1][ordinal+2] += 1
-                    teams_worst_finish_in_ties[team_2][ordinal+2] += 1
-                    teams_worst_finish_in_ties[team_3][ordinal+2] += 1
-                    tiebreaker_games += 2
+                teams_chances_tie[team_1][ordinal] += 1
+                teams_chances_tie[team_2][ordinal] += 1
+                teams_chances_tie[team_3][ordinal] += 1
+                teams_worst_finish_in_ties[team_1][ordinal+2] += 1
+                teams_worst_finish_in_ties[team_2][ordinal+2] += 1
+                teams_worst_finish_in_ties[team_3][ordinal+2] += 1
+                tiebreaker_games += 2
+                if team_1_sov > team_2_sov > team_3_sov:
                     row_data.append([col, team_1, Multiway_tie_unresolved_begin])
                     col += 1
                     row_data.append([col, team_2, Multiway_tie_unresolved_middle])
                     col += 1
-                    row_data.append([col, team_3, Multiway_tie_unresolved_end]) 
+                    row_data.append([col, team_3, Multiway_tie_unresolved_end])
+                elif team_1_sov > team_2_sov == team_3_sov:
+                    row_data.append([col, team_1, Multiway_tie_unresolved_begin])
+                    col += 1
+                    row_data.append([col, team_2, Multiway_tie_unresolved_middle_tied_SOV])
+                    col += 1
+                    row_data.append([col, team_3, Multiway_tie_unresolved_end_tied_SOV])
+                elif team_1_sov == team_2_sov > team_3_sov:
+                    row_data.append([col, team_1, Multiway_tie_unresolved_begin_tied_SOV])
+                    col += 1
+                    row_data.append([col, team_2, Multiway_tie_unresolved_middle_tied_SOV])
+                    col += 1
+                    row_data.append([col, team_3, Multiway_tie_unresolved_end])
+                elif team_1_sov == team_2_sov == team_3_sov:
+                    row_data.append([col, team_1, Multiway_tie_unresolved_begin_tied_SOV])
+                    col += 1
+                    row_data.append([col, team_2, Multiway_tie_unresolved_middle_tied_SOV])
+                    col += 1
+                    row_data.append([col, team_3, Multiway_tie_unresolved_end_tied_SOV])   
+            elif teams_aggs == [[3, 1], [2, 2], [1, 3]]: # Scenario 2: If the teams have a 3-1, 2-2, and 1-3 aggregate, it's an unresolved 3 way tie requiring 2 tiebreaker games.
+                teams_chances_tie[team_1][ordinal] += 1
+                teams_chances_tie[team_2][ordinal] += 1
+                teams_chances_tie[team_3][ordinal] += 1
+                teams_worst_finish_in_ties[team_1][ordinal+2] += 1
+                teams_worst_finish_in_ties[team_2][ordinal+2] += 1
+                teams_worst_finish_in_ties[team_3][ordinal+2] += 1
+                tiebreaker_games += 2
+                row_data.append([col, team_1, Multiway_tie_unresolved_begin])
+                col += 1
+                row_data.append([col, team_2, Multiway_tie_unresolved_middle])
+                col += 1
+                row_data.append([col, team_3, Multiway_tie_unresolved_end]) 
             elif teams_aggs == [[3, 1], [3, 1], [0, 4]]: # Scenario 3: If 2 teams are 3-1 and the 3rd team is 0-4, it's a partially resolved 3-way tie, with a tiebreaker between the 3-1 teams
-                if ordinal == 2: #If playing for 3rd in the Spring Split, the two 3-1 teams are automatically considered 3rd seeds. No tiebreakers are needed.
-                    teams_chances_no_tie[team_1][ordinal] += 1
-                    teams_chances_no_tie[team_2][ordinal] += 1
-                    teams_chances_no_tie[team_3][ordinal+2] += 1
-                    row_data.append([col, team_1, Multiway_tie_fully_resolved_begin])
-                    col += 1
-                    row_data.append([col, team_2, Multiway_tie_fully_resolved_middle])
-                    col += 1
-                    row_data.append([col, team_3, Multiway_tie_fully_resolved_end])
-                else:
-                    teams_chances_tie[team_1][ordinal] += 1
-                    teams_chances_tie[team_2][ordinal] += 1
-                    teams_chances_no_tie[team_3][ordinal+2] += 1
-                    teams_worst_finish_in_ties[team_1][ordinal+1] += 1
-                    teams_worst_finish_in_ties[team_2][ordinal+1] += 1
-                    tiebreaker_games += 1
-                    teams_sovs = Strength_of_victory([team_1, team_2], teams_h2h, sorted_teams_no_WL)
-                    team_1_sov = teams_sovs[0]
-                    team_2_sov = teams_sovs[1]
-                    if team_1_sov > team_2_sov:
-                        row_data.append([col, team_1, Multiway_tie_partially_resolved_begin])
-                        col += 1
-                        row_data.append([col, team_2, Multiway_tie_partially_resolved_middle])
-                        col += 1
-                        row_data.append([col, team_3, Multiway_tie_partially_resolved_end_locked])
-                    elif team_2_sov > team_1_sov:
-                        row_data.append([col, team_2, Multiway_tie_partially_resolved_begin])
-                        col += 1
-                        row_data.append([col, team_1, Multiway_tie_partially_resolved_middle])
-                        col += 1
-                        row_data.append([col, team_3, Multiway_tie_partially_resolved_end_locked])
-                    elif team_1_sov == team_2_sov:
-                        row_data.append([col, team_1, Multiway_tie_partially_resolved_begin_tied_SOV])
-                        col += 1
-                        row_data.append([col, team_2, Multiway_tie_partially_resolved_middle_tied_SOV])
-                        col += 1
-                        row_data.append([col, team_3, Multiway_tie_partially_resolved_end_locked])
-            elif teams_aggs == [[4, 0], [1, 3], [1, 3]]: # Scenario 4: If 1 team is 4-0 and the other two teams are 1-3, it's a partially resolved 3-way tie, with a tiebreaker between the 1-3 teams.
-                teams_chances_no_tie[team_1][ordinal] += 1
-                if ordinal == 1: #If playing for 2nd in the Spring Split, the two 1-3 teams are considered 3rd seeds. No tiebreakers are needed.
-                    teams_chances_no_tie[team_2][ordinal+1] += 1
-                    teams_chances_no_tie[team_3][ordinal+1] += 1
-                    row_data.append([col, team_1, Multiway_tie_fully_resolved_begin])
-                    col += 1
-                    row_data.append([col, team_2, Multiway_tie_fully_resolved_middle])
-                    col += 1
-                    row_data.append([col, team_3, Multiway_tie_fully_resolved_end])
-                else:
-                    teams_chances_tie[team_2][ordinal+1] += 1
-                    teams_chances_tie[team_3][ordinal+1] += 1
-                    teams_worst_finish_in_ties[team_2][ordinal+2] += 1
-                    teams_worst_finish_in_ties[team_3][ordinal+2] += 1
-                    row_data.append([col, team_1, Multiway_tie_partially_resolved_begin_locked])
+                teams_chances_tie[team_1][ordinal] += 1
+                teams_chances_tie[team_2][ordinal] += 1
+                teams_chances_no_tie[team_3][ordinal+2] += 1
+                teams_worst_finish_in_ties[team_1][ordinal+1] += 1
+                teams_worst_finish_in_ties[team_2][ordinal+1] += 1
+                tiebreaker_games += 1
+                teams_sovs = Strength_of_victory([team_1, team_2], teams_h2h, sorted_teams_no_WL)
+                team_1_sov = teams_sovs[0]
+                team_2_sov = teams_sovs[1]
+                if team_1_sov > team_2_sov:
+                    row_data.append([col, team_1, Multiway_tie_partially_resolved_begin])
                     col += 1
                     row_data.append([col, team_2, Multiway_tie_partially_resolved_middle])
                     col += 1
-                    row_data.append([col, team_3,Multiway_tie_partially_resolved_end])
+                    row_data.append([col, team_3, Multiway_tie_partially_resolved_end_locked])
+                elif team_2_sov > team_1_sov:
+                    row_data.append([col, team_2, Multiway_tie_partially_resolved_begin])
+                    col += 1
+                    row_data.append([col, team_1, Multiway_tie_partially_resolved_middle])
+                    col += 1
+                    row_data.append([col, team_3, Multiway_tie_partially_resolved_end_locked])
+                elif team_1_sov == team_2_sov:
+                    row_data.append([col, team_1, Multiway_tie_partially_resolved_begin_tied_SOV])
+                    col += 1
+                    row_data.append([col, team_2, Multiway_tie_partially_resolved_middle_tied_SOV])
+                    col += 1
+                    row_data.append([col, team_3, Multiway_tie_partially_resolved_end_locked])
+            elif teams_aggs == [[4, 0], [1, 3], [1, 3]]: # Scenario 4: If 1 team is 4-0 and the other two teams are 1-3, it's a partially resolved 3-way tie, with a tiebreaker between the 1-3 teams.
+                teams_chances_no_tie[team_1][ordinal] += 1
+                teams_chances_tie[team_2][ordinal+1] += 1
+                teams_chances_tie[team_3][ordinal+1] += 1
+                teams_worst_finish_in_ties[team_2][ordinal+2] += 1
+                teams_worst_finish_in_ties[team_3][ordinal+2] += 1
+                row_data.append([col, team_1, Multiway_tie_partially_resolved_begin_locked])
+                col += 1
+                row_data.append([col, team_2, Multiway_tie_partially_resolved_middle])
+                col += 1
+                row_data.append([col, team_3,Multiway_tie_partially_resolved_end])
             elif teams_aggs == [[4, 0], [2, 2], [0, 4]]: # Scenario 5: If 1 team is 4-0, 1 team is 2-2, and 1 team is 0-4, it's a fully resolved 3 way tie.
                 teams_chances_no_tie[team_1][ordinal] += 1
                 teams_chances_no_tie[team_2][ordinal+1] += 1
@@ -600,10 +519,11 @@ for scenario in outcomes:
                 teams_worst_finish_in_ties[team_2][ordinal] += 1
                 teams_worst_finish_in_ties[team_3][ordinal] += 1
                 teams_worst_finish_in_ties[team_4][ordinal] += 1
-                if ordinal in [5, 4, 2, 0]: #If teams playing for 6th, 5th, 3rd, or 1st, only 3 games are needed for postseason seeding
+                if ordinal in [5, 4]:
                     tiebreaker_games += 3
-                elif ordinal in [3, 1]: #4th and 2nd
+                elif ordinal in [0, 1, 2, 3]:
                     tiebreaker_games += 4
+                tiebreaker_games += 4
         elif len(teams_in_ordinal) == 5: #2 lowest SOVs go to play-in | Winner of playin + other 3 teams go to 4-way-tie
             team_1 = teams_in_ordinal[0]
             team_2 = teams_in_ordinal[1]
@@ -964,9 +884,9 @@ for scenario in outcomes:
                 teams_worst_finish_in_ties[team_3][ordinal+4] += 1
                 teams_worst_finish_in_ties[team_4][ordinal+4] += 1
                 teams_worst_finish_in_ties[team_5][ordinal+4] += 1 
-            if ordinal in [5, 4, 2, 0]: #If playing for 1st, 3rd, 5th or 6th, only 4 games are needed
+            if ordinal in [4, 5]: #If playing for 5th or 6th, the Loser's Match (X1) is not needed to determine post-split seeding
                 tiebreaker_games += 4
-            elif ordinal in [3, 1]:
+            else:
                 tiebreaker_games += 5
             five_way_ties += 1
         elif len(teams_in_ordinal) == 6: #4 lowest SOVs randomly drawn into 2 play-ins | Losers go to 2 way tie, Winners go to 4 way tie
@@ -1764,19 +1684,16 @@ for scenario in outcomes:
                 teams_worst_finish_in_ties[team_4][ordinal+5] += 1
                 teams_worst_finish_in_ties[team_5][ordinal+5] += 1
                 teams_worst_finish_in_ties[team_6][ordinal+5] += 1
-            if ordinal == 2 or ordinal == 4: #If playing for 3rd or 5th, 5 games
+            if ordinal == 4:
                 tiebreaker_games += 5
-            elif ordinal == 0 or ordinal == 3: # If playing for 1st or 4th, 6 games
+            elif ordinal in [2, 3]:
                 tiebreaker_games += 6
-            elif ordinal == 1: # If playing for 2nd, 7 games
+            else:
                 tiebreaker_games += 7
             six_way_ties += 1
         else:
-            if len(teams_in_ordinal) == 7:
-                if ordinal == 2 or ordinal == 3:
-                    tiebreaker_games += 7
-                else:
-                    tiebreaker_games += 9
+            if len(teams_in_ordinal) == 7: # 3 Losers of Playins go to a 3-way-tie scenario which looks at h2h, so could be 7-9 tiebreaker games.
+                tiebreaker_games += 7
                 seven_way_ties += 1
             elif len(teams_in_ordinal) == 8:
                 if ordinal == 2:
