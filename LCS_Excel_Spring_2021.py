@@ -604,7 +604,7 @@ for scenario in outcomes:
                     tiebreaker_games += 3
                 elif ordinal in [3, 1]: #4th and 2nd
                     tiebreaker_games += 4
-        elif len(teams_in_ordinal) == 5: #2 lowest SOVs go to play-in
+        elif len(teams_in_ordinal) == 5: #2 lowest SOVs go to play-in | Winner of playin + other 3 teams go to 4-way-tie
             team_1 = teams_in_ordinal[0]
             team_2 = teams_in_ordinal[1]
             team_3 = teams_in_ordinal[2]
@@ -626,27 +626,25 @@ for scenario in outcomes:
             team_3_sov = sorted_teams_sov_dict[team_3]
             team_4_sov = sorted_teams_sov_dict[team_4]
             team_5_sov = sorted_teams_sov_dict[team_5]
-            if team_3_sov == team_4_sov and team_4_sov > team_5_sov:
-                row_data.append([col, team_1, Multiway_tie_unresolved_begin])
-                col += 1
-                row_data.append([col, team_2, Multiway_tie_unresolved_middle])
-                col += 1
-                row_data.append([col, team_3, Multiway_tie_unresolved_middle_tied_SOV])
-                col += 1
-                row_data.append([col, team_4, Multiway_tie_unresolved_middle_tied_SOV])
-                col += 1
-                row_data.append([col, team_5, Multiway_tie_unresolved_end])
-                teams_chances_tie[team_1][ordinal] += 1
-                teams_chances_tie[team_2][ordinal] += 1
-                teams_chances_tie[team_3][ordinal] += 1
-                teams_chances_tie[team_4][ordinal] += 1
-                teams_chances_tie[team_5][ordinal] += 1
-                teams_worst_finish_in_ties[team_1][ordinal+3] += 1
-                teams_worst_finish_in_ties[team_2][ordinal+3] += 1
-                teams_chances_unknown[team_3][ordinal+4] += 1
-                teams_chances_unknown[team_4][ordinal+4] += 1
-                teams_worst_finish_in_ties[team_5][ordinal+4] += 1
-            elif team_3_sov != team_4_sov and team_4_sov > team_5_sov:
+                #The below if/elifs are coded so that no matter what, the teams will be in order of SOV to indicate which 2 teams will be in the play-in, as well as which teams have side selection priority when they get drawn in to the 4-way-tie.
+                #If you want to know what teams are the bottom 2, and you don't care about SOV order, you can optimize this section with the following code block. Including this destroys my line count, but who really cares in the end?
+                    # #if team_3_sov > team_4_sov > team_5_sov:
+                    #     pass  
+                    # elif team_3_sov > team_4_sov == team_5_sov:
+                    #     pass
+                    # elif team_2_sov > team_3_sov == team_4_sov > team_5_sov:
+                    #     pass
+                    # elif team_2_sov > team_3_sov == team_4_sov == team_5_sov:
+                    #     pass
+                    # elif team_1_sov > team_2_sov == team_3_sov == team_4_sov > team_5_sov:
+                    #     pass
+                    # elif team_1_sov > team_2_sov == team_3_sov == team_4_sov == team_5_sov:
+                    #     pass
+                    # elif team_1_sov == team_2_sov == team_3_sov == team_4_sov > team_5_sov:
+                    #     pass
+                    # elif team_1_sov == team_2_sov == team_3_sov == team_4_sov == team_5_sov:
+                    #     pass
+            if team_1_sov > team_2_sov > team_3_sov > team_4_sov > team_5_sov:
                 row_data.append([col, team_1, Multiway_tie_unresolved_begin])
                 col += 1
                 row_data.append([col, team_2, Multiway_tie_unresolved_middle])
@@ -665,8 +663,8 @@ for scenario in outcomes:
                 teams_worst_finish_in_ties[team_2][ordinal+3] += 1
                 teams_worst_finish_in_ties[team_3][ordinal+3] += 1
                 teams_worst_finish_in_ties[team_4][ordinal+4] += 1
-                teams_worst_finish_in_ties[team_5][ordinal+4] += 1
-            elif team_3_sov != team_4_sov and team_4_sov == team_5_sov:
+                teams_worst_finish_in_ties[team_5][ordinal+4] += 1 
+            elif team_1_sov > team_2_sov > team_3_sov > team_4_sov == team_5_sov:
                 row_data.append([col, team_1, Multiway_tie_unresolved_begin])
                 col += 1
                 row_data.append([col, team_2, Multiway_tie_unresolved_middle])
@@ -685,15 +683,293 @@ for scenario in outcomes:
                 teams_worst_finish_in_ties[team_2][ordinal+3] += 1
                 teams_worst_finish_in_ties[team_3][ordinal+3] += 1
                 teams_worst_finish_in_ties[team_4][ordinal+4] += 1
-                teams_worst_finish_in_ties[team_5][ordinal+4] += 1
-            else:
-                print("5 way tie unknown SOV resolution: ", sorted_teams_sov_dict)
+                teams_worst_finish_in_ties[team_5][ordinal+4] += 1 
+            elif team_1_sov > team_2_sov > team_3_sov == team_4_sov > team_5_sov:
+                row_data.append([col, team_1, Multiway_tie_unresolved_begin])
+                col += 1
+                row_data.append([col, team_2, Multiway_tie_unresolved_middle])
+                col += 1
+                row_data.append([col, team_3, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_4, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_5, Multiway_tie_unresolved_end])
+                teams_chances_tie[team_1][ordinal] += 1
+                teams_chances_tie[team_2][ordinal] += 1
+                teams_chances_tie[team_3][ordinal] += 1
+                teams_chances_tie[team_4][ordinal] += 1
+                teams_chances_tie[team_5][ordinal] += 1
+                teams_worst_finish_in_ties[team_1][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_2][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_3][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_4][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_5][ordinal+4] += 1 
+            elif team_1_sov > team_2_sov > team_3_sov == team_4_sov == team_5_sov:
+                row_data.append([col, team_1, Multiway_tie_unresolved_begin])
+                col += 1
+                row_data.append([col, team_2, Multiway_tie_unresolved_middle])
+                col += 1
+                row_data.append([col, team_3, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_4, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_5, Multiway_tie_unresolved_end_tied_SOV])
+                teams_chances_tie[team_1][ordinal] += 1
+                teams_chances_tie[team_2][ordinal] += 1
+                teams_chances_tie[team_3][ordinal] += 1
+                teams_chances_tie[team_4][ordinal] += 1
+                teams_chances_tie[team_5][ordinal] += 1
+                teams_worst_finish_in_ties[team_1][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_2][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_3][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_4][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_5][ordinal+4] += 1 
+            elif team_1_sov > team_2_sov == team_3_sov > team_4_sov > team_5_sov:
+                row_data.append([col, team_1, Multiway_tie_unresolved_begin])
+                col += 1
+                row_data.append([col, team_2, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_3, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_4, Multiway_tie_unresolved_middle])
+                col += 1
+                row_data.append([col, team_5, Multiway_tie_unresolved_end])
+                teams_chances_tie[team_1][ordinal] += 1
+                teams_chances_tie[team_2][ordinal] += 1
+                teams_chances_tie[team_3][ordinal] += 1
+                teams_chances_tie[team_4][ordinal] += 1
+                teams_chances_tie[team_5][ordinal] += 1
+                teams_worst_finish_in_ties[team_1][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_2][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_3][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_4][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_5][ordinal+4] += 1 
+            elif team_1_sov > team_2_sov == team_3_sov > team_4_sov == team_5_sov:
+                row_data.append([col, team_1, Multiway_tie_unresolved_begin])
+                col += 1
+                row_data.append([col, team_2, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_3, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_4, Multiway_tie_unresolved_middle_new_tied_SOV])
+                col += 1
+                row_data.append([col, team_5, Multiway_tie_unresolved_end_tied_SOV])
+                teams_chances_tie[team_1][ordinal] += 1
+                teams_chances_tie[team_2][ordinal] += 1
+                teams_chances_tie[team_3][ordinal] += 1
+                teams_chances_tie[team_4][ordinal] += 1
+                teams_chances_tie[team_5][ordinal] += 1
+                teams_worst_finish_in_ties[team_1][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_2][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_3][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_4][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_5][ordinal+4] += 1 
+            elif team_1_sov > team_2_sov == team_3_sov == team_4_sov > team_5_sov:
+                row_data.append([col, team_1, Multiway_tie_unresolved_begin])
+                col += 1
+                row_data.append([col, team_2, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_3, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_4, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_5, Multiway_tie_unresolved_end])
+                teams_chances_tie[team_1][ordinal] += 1
+                teams_chances_tie[team_2][ordinal] += 1
+                teams_chances_tie[team_3][ordinal] += 1
+                teams_chances_tie[team_4][ordinal] += 1
+                teams_chances_tie[team_5][ordinal] += 1
+                teams_worst_finish_in_ties[team_1][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_2][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_3][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_4][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_5][ordinal+4] += 1 
+            elif team_1_sov > team_2_sov == team_3_sov == team_4_sov == team_5_sov:
+                row_data.append([col, team_1, Multiway_tie_unresolved_begin])
+                col += 1
+                row_data.append([col, team_2, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_3, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_4, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_5, Multiway_tie_unresolved_end_tied_SOV])
+                teams_chances_tie[team_1][ordinal] += 1
+                teams_chances_tie[team_2][ordinal] += 1
+                teams_chances_tie[team_3][ordinal] += 1
+                teams_chances_tie[team_4][ordinal] += 1
+                teams_chances_tie[team_5][ordinal] += 1
+                teams_worst_finish_in_ties[team_1][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_2][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_3][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_4][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_5][ordinal+4] += 1 
+            elif team_1_sov == team_2_sov > team_3_sov > team_4_sov > team_5_sov:
+                row_data.append([col, team_1, Multiway_tie_unresolved_begin_tied_SOV])
+                col += 1
+                row_data.append([col, team_2, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_3, Multiway_tie_unresolved_middle])
+                col += 1
+                row_data.append([col, team_4, Multiway_tie_unresolved_middle])
+                col += 1
+                row_data.append([col, team_5, Multiway_tie_unresolved_end])
+                teams_chances_tie[team_1][ordinal] += 1
+                teams_chances_tie[team_2][ordinal] += 1
+                teams_chances_tie[team_3][ordinal] += 1
+                teams_chances_tie[team_4][ordinal] += 1
+                teams_chances_tie[team_5][ordinal] += 1
+                teams_worst_finish_in_ties[team_1][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_2][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_3][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_4][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_5][ordinal+4] += 1 
+            elif team_1_sov == team_2_sov > team_3_sov > team_4_sov == team_5_sov:
+                row_data.append([col, team_1, Multiway_tie_unresolved_begin_tied_SOV])
+                col += 1
+                row_data.append([col, team_2, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_3, Multiway_tie_unresolved_middle])
+                col += 1
+                row_data.append([col, team_4, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_5, Multiway_tie_unresolved_end_tied_SOV])
+                teams_chances_tie[team_1][ordinal] += 1
+                teams_chances_tie[team_2][ordinal] += 1
+                teams_chances_tie[team_3][ordinal] += 1
+                teams_chances_tie[team_4][ordinal] += 1
+                teams_chances_tie[team_5][ordinal] += 1
+                teams_worst_finish_in_ties[team_1][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_2][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_3][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_4][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_5][ordinal+4] += 1 
+            elif team_1_sov == team_2_sov > team_3_sov == team_4_sov > team_5_sov:
+                row_data.append([col, team_1, Multiway_tie_unresolved_begin_tied_SOV])
+                col += 1
+                row_data.append([col, team_2, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_3, Multiway_tie_unresolved_middle_new_tied_SOV])
+                col += 1
+                row_data.append([col, team_4, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_5, Multiway_tie_unresolved_end])
+                teams_chances_tie[team_1][ordinal] += 1
+                teams_chances_tie[team_2][ordinal] += 1
+                teams_chances_tie[team_3][ordinal] += 1
+                teams_chances_tie[team_4][ordinal] += 1
+                teams_chances_tie[team_5][ordinal] += 1
+                teams_worst_finish_in_ties[team_1][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_2][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_3][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_4][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_5][ordinal+4] += 1 
+            elif team_1_sov == team_2_sov > team_3_sov == team_4_sov == team_5_sov:
+                row_data.append([col, team_1, Multiway_tie_unresolved_begin_tied_SOV])
+                col += 1
+                row_data.append([col, team_2, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_3, Multiway_tie_unresolved_middle_new_tied_SOV])
+                col += 1
+                row_data.append([col, team_4, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_5, Multiway_tie_unresolved_end_tied_SOV])
+                teams_chances_tie[team_1][ordinal] += 1
+                teams_chances_tie[team_2][ordinal] += 1
+                teams_chances_tie[team_3][ordinal] += 1
+                teams_chances_tie[team_4][ordinal] += 1
+                teams_chances_tie[team_5][ordinal] += 1
+                teams_worst_finish_in_ties[team_1][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_2][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_3][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_4][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_5][ordinal+4] += 1 
+            elif team_1_sov == team_2_sov == team_3_sov > team_4_sov > team_5_sov:
+                row_data.append([col, team_1, Multiway_tie_unresolved_begin_tied_SOV])
+                col += 1
+                row_data.append([col, team_2, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_3, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_4, Multiway_tie_unresolved_middle])
+                col += 1
+                row_data.append([col, team_5, Multiway_tie_unresolved_end])
+                teams_chances_tie[team_1][ordinal] += 1
+                teams_chances_tie[team_2][ordinal] += 1
+                teams_chances_tie[team_3][ordinal] += 1
+                teams_chances_tie[team_4][ordinal] += 1
+                teams_chances_tie[team_5][ordinal] += 1
+                teams_worst_finish_in_ties[team_1][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_2][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_3][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_4][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_5][ordinal+4] += 1 
+            elif team_1_sov == team_2_sov == team_3_sov > team_4_sov == team_5_sov:
+                row_data.append([col, team_1, Multiway_tie_unresolved_begin_tied_SOV])
+                col += 1
+                row_data.append([col, team_2, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_3, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_4, Multiway_tie_unresolved_middle_new_tied_SOV])
+                col += 1
+                row_data.append([col, team_5, Multiway_tie_unresolved_end_tied_SOV])
+                teams_chances_tie[team_1][ordinal] += 1
+                teams_chances_tie[team_2][ordinal] += 1
+                teams_chances_tie[team_3][ordinal] += 1
+                teams_chances_tie[team_4][ordinal] += 1
+                teams_chances_tie[team_5][ordinal] += 1
+                teams_worst_finish_in_ties[team_1][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_2][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_3][ordinal+3] += 1
+                teams_worst_finish_in_ties[team_4][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_5][ordinal+4] += 1 
+            elif team_1_sov == team_2_sov == team_3_sov == team_4_sov > team_5_sov:
+                row_data.append([col, team_1, Multiway_tie_unresolved_begin_tied_SOV])
+                col += 1
+                row_data.append([col, team_2, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_3, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_4, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_5, Multiway_tie_unresolved_end])
+                teams_chances_tie[team_1][ordinal] += 1
+                teams_chances_tie[team_2][ordinal] += 1
+                teams_chances_tie[team_3][ordinal] += 1
+                teams_chances_tie[team_4][ordinal] += 1
+                teams_chances_tie[team_5][ordinal] += 1
+                teams_worst_finish_in_ties[team_1][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_2][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_3][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_4][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_5][ordinal+4] += 1 
+            elif team_1_sov == team_2_sov == team_3_sov == team_4_sov == team_5_sov:
+                row_data.append([col, team_1, Multiway_tie_unresolved_begin_tied_SOV])
+                col += 1
+                row_data.append([col, team_2, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_3, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_4, Multiway_tie_unresolved_middle_tied_SOV])
+                col += 1
+                row_data.append([col, team_5, Multiway_tie_unresolved_end_tied_SOV])
+                teams_chances_tie[team_1][ordinal] += 1
+                teams_chances_tie[team_2][ordinal] += 1
+                teams_chances_tie[team_3][ordinal] += 1
+                teams_chances_tie[team_4][ordinal] += 1
+                teams_chances_tie[team_5][ordinal] += 1
+                teams_worst_finish_in_ties[team_1][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_2][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_3][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_4][ordinal+4] += 1
+                teams_worst_finish_in_ties[team_5][ordinal+4] += 1 
             if ordinal in [5, 4, 2, 0]: #If playing for 1st, 3rd, 5th or 6th, only 4 games are needed
                 tiebreaker_games += 4
             elif ordinal in [3, 1]:
                 tiebreaker_games += 5
             five_way_ties += 1
-        elif len(teams_in_ordinal) == 6: #4 lowest SOVs randomly drawn into playins
+        elif len(teams_in_ordinal) == 6: #4 lowest SOVs randomly drawn into playins | Losers go to 2 way tie, Winners go to 4 way tie
             team_1 = teams_in_ordinal[0]
             team_2 = teams_in_ordinal[1]
             team_3 = teams_in_ordinal[2]
