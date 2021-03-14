@@ -9,7 +9,7 @@ Optional packages:
   - tqdm (Progress bar for large scenario processing)
   - timeit (Manual timing of different stages of the script)
 
-LCS Spring 2021:
+LCS_Excel_Spring_2021:
    1. Completely does 2-6 way ties, including SOVs where needed for side selection order. 7-10 way ties are calculated but not in SOV order.
    2. Outputs Foldy Sheet to an .xlsx file
    3. Outputs lists/arrays indicating the following:
