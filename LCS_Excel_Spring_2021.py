@@ -299,9 +299,9 @@ for scenario in outcomes:
             team_1 = teams_in_ordinal[0]
             team_2 = teams_in_ordinal[1]
             team_3 = teams_in_ordinal[2]
-            team_1_aggregate = sorted_teams_aggs_dict[team]
-            team_2_aggregate = sorted_teams_aggs_dict[team]
-            team_3_aggregate = sorted_teams_aggs_dict[team]
+            team_1_aggregate = sorted_teams_aggs_dict[team_1]
+            team_2_aggregate = sorted_teams_aggs_dict[team_2]
+            team_3_aggregate = sorted_teams_aggs_dict[team_3]
             teams_aggs = [team_1_aggregate, team_2_aggregate, team_3_aggregate]
             if teams_aggs == [[2, 2], [2, 2], [2, 2]]: # Scenario 1: If all teams are 2-2, it's an unresolved 3 way tie requiring 2 tiebreaker games.
                 teams_sovs = Strength_of_victory([team_1, team_2, team_3], teams_h2h, sorted_teams_no_WL)
