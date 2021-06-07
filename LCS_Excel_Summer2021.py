@@ -7,8 +7,9 @@ import itertools
 # --Notes--
 # This sheet calculates remaining scenarios in the LCS, specifically Summer 2021. 
 # This sheet figures out what ties will exist in each scenario, from 2 way ties to 10 way ties.
-# This sheet puts tied teams in Strength of Victory order when it's needed for both side selection, and seeding play-in matches. 7 to 10 way ties do not calculate SoVs at this time, as those are very rare,
-# and there's never been an instance where in the final 20 matches, a 7 to 10 way tie is possible.
+# This sheet puts tied teams in Strength of Victory order when it's needed for both side selection, and seeding play-in matches. 
+# 7 to 10 way ties do not calculate SoVs at this time.
+# Those are very rare, and there's never been an instance where in the final 20 matches, a 7 to 10 way tie is possible.
 
 # With records from Spring being carried over, it likely reduces chances of tiebreakers.
 # 2 way ties: Unlike in Spring, unresolved 2 way ties are impossible, since each team will have 5 games against each team. 2 from Spring, 3 from Summer.
@@ -20,16 +21,30 @@ import itertools
 
 # 2 way tie: Tiebreaker games are impossible. These will always resolve via H2H. 
 # 3 way tie: Check Combined Wins of teams. If there are ties there, go to games. 0-2 additional games possible.
-#                    0 games: All teams have different Combined Wins
-#                    1 game: 2 teams have the same Combined Wins
-#                    2 games: All teams have the same Combined Wins                       
-# 4 way tie: Teams are drawn into 2 "1st round" matches. Winners play for top 2 seeds, Losers play for bottom 2 seeds. Maximum of 4 games
-# 5 way tie: 1 play-in game between 2 lowest SoV Teams. Loser gets lowest seed. Winner + 3 remaining teams go to 4-way-tie procedure. Maximum of 5 games
-# 6 way tie: 2 randomly drawn play-in games between 4 lowest SoV Teams. Losers go to 2-way-tie procedure. Winners + 2 remaining teams go to 4-way-tie procedure. Maximum of 6 games
-# 7 way tie: 3 randomly drawn play-in games between 6 lowest SoV Teams. Losers go to 3-way-tie procedure. Winners + remaining team go to 4 way-tie procedure. Maximum of 9 games.
-# 8 way tie: 4 randomly drawn play-in games. Losers go to 4-way-tie procedure for bottom 4 seeds. Winners go to 4-way-tie procedure for top 4 seeds. Maximum of 12 games.
-# 9 way tie: 1 play-in games between 2 lowest SoV Teams. Loser gets lowest seed. Winner + 7 remaining teams go to 8-way-tie procedure. Maximum of 13 games.
-# 10 way tie: 2 play-in games between 4 lowest SoV Teams. Losers go to 2-way-tie for bottom 2 seeds. Winners + remaining 6 taems go to 8-way-tie procedure. Maximum of 14 games.
+#            0 games: All teams have different Combined Wins
+#            1 game: 2 teams have the same Combined Wins
+#            2 games: All teams have the same Combined Wins                       
+# 4 way tie: Teams are drawn into 2 "1st round" matches.
+#            Losers play for bottom 2 seeds
+#            Winners play for top 2 seeds. Maximum of 4 games
+# 5 way tie: 1 play-in game between 2 lowest SoV Teams. 
+#            Loser gets lowest seed.
+#            Winner + 3 remaining teams go to 4-way-tie procedure. Maximum of 5 games
+# 6 way tie: 2 randomly drawn play-in games between 4 lowest SoV Teams. 
+#            Losers go to 2-way-tie procedure. 
+#            Winners + 2 remaining teams go to 4-way-tie procedure. Maximum of 6 games
+# 7 way tie: 3 randomly drawn play-in games between 6 lowest SoV Teams. 
+#            Losers go to 3-way-tie procedure. 
+#            Winners + remaining team go to 4 way-tie procedure. Maximum of 9 games.
+# 8 way tie: 4 randomly drawn play-in games. 
+#            Losers go to 4-way-tie procedure for bottom 4 seeds. 
+#            Winners go to 4-way-tie procedure for top 4 seeds. Maximum of 12 games.
+# 9 way tie: 1 play-in games between 2 lowest SoV Teams. 
+#            Loser gets lowest seed. 
+#            Winner + 7 remaining teams go to 8-way-tie procedure. Maximum of 13 games.
+# 10 way tie: 2 play-in games between 4 lowest SoV Teams. 
+#             Losers go to 2-way-tie for bottom 2 seeds.
+#             Winners + remaining 6 taems go to 8-way-tie procedure. Maximum of 14 games.
 
 # --Specific Tiebreaker Scenarios--
 
@@ -138,7 +153,8 @@ def Strength_of_victory(tied_teams, teams_wins, sorted_teams_no_WL):
     }
     ordinal = 1
     teams_sov_points = {}
-    for teams in sorted_teams_no_WL: # Assigns each team a set SoV points for where they placed in the standings. ex: {'100': 5.0, 'C9': 4.5, 'CLG': 4.0, 'DIG': 4.0, 'EG': 4.0, 'FLY': 2.5, 'GG': 2.0, 'IMT': 2.0, 'TL': 1.0, 'TSM': 0.5}
+    for teams in sorted_teams_no_WL: # Assigns each team a set SoV points for where they placed in the standings. 
+    #ex: {'100': 5.0, 'C9': 4.5, 'CLG': 4.0, 'DIG': 3.5, 'EG': 3.0, 'FLY': 2.5, 'GG': 2.0, 'IMT': 2.0, 'TL': 1.0, 'TSM': 0.5}
         teams = teams.split()
         for team in teams:
             teams_sov_points[team] = sov_points[ordinal] 
@@ -307,7 +323,7 @@ for scenario in outcomes:
         teams_standings[loser][1] += 1 # Increase's loser's losses by one in teams_standings
         match_num += 1
     ordinal = 1
-    for k in sorted(teams_standings, key=lambda k: (-teams_standings[k][0], teams_standings[k][1]), reverse=False):  # k = team. Sorts the teams dict by Wins descending, then losses ascending
+    for k in sorted(teams_standings, key=lambda k: (-teams_standings[k][0], teams_standings[k][1]), reverse=False):  # k = team. Sorts the teams dict by Wins descending
         if sorted_teams.get(str(teams_standings.get(k))) == None:
             sorted_teams.update({str(teams_standings.get(k)): k})
         else:
@@ -417,7 +433,8 @@ for scenario in outcomes:
                     teams_worst_finish_in_ties[team_1][ordinal+2] += 1
                     teams_worst_finish_in_ties[team_2][ordinal+2] += 1
                     teams_worst_finish_in_ties[team_3][ordinal+2] += 1
-            elif team_1_aggregate == team_2_aggregate > team_3_aggregate: # Scenario 2: If the top 2 teams have the same aggregate, they will play a tiebreaker game, with side selection given to the favored team in their h2h
+            elif team_1_aggregate == team_2_aggregate > team_3_aggregate: # Scenario 2: Top 2 teams have the same aggregate. They will play a tiebreaker game.
+                #Side selection is given to the team with the favored h2h.
                 tiebreaker_games += 1
                 team_1_aggregate = teams_combined_wins[team_1][list(teams_combined_wins).index(team_2)]
                 team_2_aggregate = teams_combined_wins[team_2][list(teams_combined_wins).index(team_1)]
@@ -438,7 +455,8 @@ for scenario in outcomes:
                     row_data.append([col, team_1, Multiway_tie_partially_resolved_middle])
                     col += 1
                     row_data.append([col, team_3, Multiway_tie_partially_resolved_end_locked])
-            elif team_1_aggregate > team_2_aggregate == team_3_aggregate: # Scenario 3: If the bottom 2 teams have the same aggregate, they will play a tiebreaker game, with side selection given to the favored team in their h2h, unless...
+            elif team_1_aggregate > team_2_aggregate == team_3_aggregate: # Scenario 3: Bottom 2 teams have the same aggregate. They will play a tiebreaker game. 
+                #Side selection is given to the team with the favored h2h, unless...
                 if ordinal == 7: #If the 3 way tie is for 8th, then the bottom two teams do not have a tiebreaker game, as they would play for 9th/10th.
                     row_data.append([col, team_1, Multiway_tie_fully_resolved_begin])
                     col += 1
@@ -584,24 +602,6 @@ for scenario in outcomes:
                 sorted_teams_sov_dict[team] = teams_sov_dict[team]
             team_1, team_2, team_3, team_4, team_5 = list(sorted_teams_sov_dict)
             team_1_sov, team_2_sov, team_3_sov, team_4_sov, team_5_sov = sorted_teams_sov_dict.values()
-            #The below if/elifs are coded so that no matter what, the teams will be in order of SOV to indicate which 2 teams will be in the play-in, as well as which teams have side selection priority when they get drawn in to the 4-way-tie.
-                #If you only want to know what teams are the bottom 2, and you don't care about SOV order, you can optimize this section with the following code block. Including this destroys my line count, but who really cares in the end?
-                    # #if team_3_sov > team_4_sov > team_5_sov:
-                    #     pass  
-                    # elif team_3_sov > team_4_sov == team_5_sov:
-                    #     pass
-                    # elif team_2_sov > team_3_sov == team_4_sov > team_5_sov:
-                    #     pass
-                    # elif team_2_sov > team_3_sov == team_4_sov == team_5_sov:
-                    #     pass
-                    # elif team_1_sov > team_2_sov == team_3_sov == team_4_sov > team_5_sov:
-                    #     pass
-                    # elif team_1_sov > team_2_sov == team_3_sov == team_4_sov == team_5_sov:
-                    #     pass
-                    # elif team_1_sov == team_2_sov == team_3_sov == team_4_sov > team_5_sov:
-                    #     pass
-                    # elif team_1_sov == team_2_sov == team_3_sov == team_4_sov == team_5_sov:
-                    #     pass
             if team_1_sov > team_2_sov > team_3_sov > team_4_sov > team_5_sov:
                 row_data.append([col, team_1, Multiway_tie_unresolved_begin])
                 col += 1
@@ -936,8 +936,6 @@ for scenario in outcomes:
                 sorted_teams_sov_dict[team] = teams_sov_dict[team]
             team_1, team_2, team_3, team_4, team_5, team_6 = list(sorted_teams_sov_dict)
             team_1_sov, team_2_sov, team_3_sov, team_4_sov, team_5_sov, team_6_sov = sorted_teams_sov_dict.values()
-            # Same scenario as the 5-way-tiebreaker. Can be optimized if you just want to know the bottom 4 teams. Don't want to bother writing it out now, good luck future me. 
-            # Also at what point does all the unique scenarios not actually become possible? Cause ain't no way 10-way-tie has 2^9 unique scenarios for SOVs...
             if team_1_sov > team_2_sov > team_3_sov > team_4_sov > team_5_sov > team_6_sov:
                 row_data.append([col, team_1, Multiway_tie_unresolved_begin])
                 col += 1
@@ -1706,7 +1704,8 @@ for scenario in outcomes:
                 teams_worst_finish_in_ties[team_4][ordinal+5] += 1
                 teams_worst_finish_in_ties[team_5][ordinal+5] += 1
                 teams_worst_finish_in_ties[team_6][ordinal+5] += 1
-            if ordinal == 2: #If playing for 3rd, only the 2 playin games are needed, as the losers would go to a resolved 2-way-tie, and winners go to a 4-way-tie for 3rd with no tiebreakers.
+            if ordinal == 2: #If playing for 3rd, only the 2 playin games are needed, as the losers would go to a resolved 2-way-tie, 
+                             #and winners go to a 4-way-tie for 3rd with no tiebreakers.
                 tiebreaker_games += 2
             else:
                 tiebreaker_games += 6
