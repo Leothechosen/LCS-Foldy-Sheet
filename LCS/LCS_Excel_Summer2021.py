@@ -5,11 +5,10 @@ import tqdm.contrib.itertools
 import itertools
 
 # --Notes--
-# This sheet calculates remaining scenarios in the LCS, specifically Summer 2021. 
-# This sheet figures out what ties will exist in each scenario, from 2 way ties to 10 way ties.
-# This sheet puts tied teams in Strength of Victory order when it's needed for both side selection, and seeding play-in matches. 
-# 7 to 10 way ties do not calculate SoVs at this time.
-# Those are very rare, and there's never been an instance where in the final 20 matches, a 7 to 10 way tie is possible.
+# This script generates remaining scenarios in the LCS, specifically Summer 2021. 
+# Then it figures out what ties will exist in each scenario, from 2 way ties to 10 way ties.
+# It then puts tied teams in Strength of Victory order when it's needed for both side selection, and seeding play-in matches. Only up to 6 way ties
+# And after all that, it exports it into a .xlsx file.
 
 # With records from Spring being carried over, it likely reduces chances of tiebreakers.
 # 2 way ties: Unlike in Spring, unresolved 2 way ties are impossible, since each team will have 5 games against each team. 2 from Spring, 3 from Summer.
