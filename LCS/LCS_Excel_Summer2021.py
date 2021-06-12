@@ -102,7 +102,7 @@ import itertools
 #                              1 game: 2 teams have the same highest Combined Wins
 #                              2 games: All taems have the same Combined Wins
 
-workbook = xlsxwriter.Workbook('C:/DiscordBots/Expirements/LoL Scenarios/LCS/LCS_Scenarios_SOV.xlsx')
+workbook = xlsxwriter.Workbook('C:/DiscordBots/Expirements/LoL Scenarios/LCS/LCS_Scenarios_Summer2021.xlsx')
 worksheet = workbook.add_worksheet()
 
 two_way_tie_unresolved_start = workbook.add_format({'bottom': 2, 'top': 2, 'left': 2, 'bg_color': 'red'})
@@ -126,6 +126,7 @@ Multiway_tie_partially_resolved_begin = workbook.add_format({'bottom' : 2, 'top'
 Multiway_tie_partially_resolved_middle = workbook.add_format({'bottom' : 2, 'top' : 2, 'bg_color': '#00FFFF'})
 Multiway_tie_partially_resolved_end = workbook.add_format({'bottom' : 2, 'top' : 2, 'right' : 2, 'bg_color': '#00FFFF'})
 Multiway_tie_partially_resolved_begin_locked = workbook.add_format({'bottom' : 2, 'top' : 2, 'left' : 2, 'bg_color': '#00FFFF', 'bold': True})
+Multiway_tie_partially_resolved_middle_locked = workbook.add_format({'bottom' : 2, 'top' : 2, 'bg_color': '#00FFFF', 'bold': True})
 Multiway_tie_partially_resolved_end_locked = workbook.add_format({'bottom' : 2, 'top' : 2, 'right' : 2, 'bg_color': '#00FFFF', 'bold': True})
 
 Multiway_tie_partially_resolved_begin_tied_SOV = workbook.add_format({'bottom' : 2, 'top' : 2, 'left' : 2, 'bg_color': '#00FFFF', 'italic': True})
@@ -260,56 +261,30 @@ for scenario in outcomes:
         row_data.append([col, winner, None])
         col += 1
     sorted_teams = {}
-    teams_standings = {
-        "C9":  [12, 5],
-        "TL":  [12, 6],
-        "TSM": [12, 6],
-        "100": [11, 7],
-        "DIG": [11, 7],
-        "EG":  [10, 8],
-        "IMT": [7, 10],
-        "FLY": [6, 12],
-        "CLG": [5, 13],
-        "GG":  [3, 15],
+    teams_standings = { #The order of this list doesn't matter. I like ordering it by how the standings are, though.
+        "C9":  [15, 7],
+        "TSM": [15, 7],
+        "100": [14, 8],
+        "TL":  [14, 8],
+        "DIG": [13, 9],
+        "EG":  [11, 11],
+        "IMT": [10, 12],
+        "FLY": [8, 14],
+        "CLG": [6, 16],
+        "GG":  [4, 18],
     }
-
-    # In a best case scenario, I would combine these 2 tables, but Leaguepedia, which is where I get my h2h info,
-    # doesn't have a combined h2h table, it's easier to have 2 seperate tables for each split and combine them in the script.
-    teams_wins_spring = { # 100 |  C9 | CLG | DIG | EG | FLY | GG | IMT | TL | TSM
-        "100": [None, 0, 2, 2, 1, 1, 1, 2, 1, 0], #11 wins
-        "C9":  [2, None, 1, 1, 1, 2, 2, 1, 0, 1], #13 wins
-        "CLG": [0, 1, None, 1, 0, 0, 1, 1, 1, 0], #5 wins
-        "DIG": [0, 0, 1, None, 2, 1, 2, 2, 0, 2], #11 wins
-        "EG":  [1, 1, 2, 0, None, 2, 2, 0, 1, 1], #10 wins
-        "FLY": [0, 0, 2, 0, 0, None, 2, 0, 0, 2], #6 wins
-        "GG":  [1, 0, 1, 0, 0, 0, None, 1, 0, 0], #3 wins
-        "IMT": [0, 0, 1, 0, 2, 2, 1, None, 1, 0], #7 wins
-        "TL":  [1, 2, 1, 2, 1, 2, 2, 1, None, 0], #12 wins
-        "TSM": [2, 1, 2, 0, 1, 0, 2, 2, 2, None]  #12 wins
-    }
-    teams_wins_summer = { #100, C9, CLG, DIG, EG, FLY, GG, IMT, TL, TSM
-        "100": [None, 1, 0, 1, 0, 0, 0, 0, 0, 0],
-        "C9":  [0, None, 0, 0, 0, 0, 0, 0, 1, 0],
-        "CLG": [0, 0, None, 0, 0, 0, 0, 0, 0, 0],
-        "DIG": [0, 0, 0, None, 1, 1, 0, 0, 0, 0],
-        "EG":  [0, 0, 0, 0, None, 0, 0, 0, 0, 0],
-        "FLY": [0, 0, 1, 0, 1, None, 0, 0, 0, 0],
-        "GG":  [0, 1, 0, 0, 0, 0, None, 0, 0, 0],
-        "IMT": [1, 0, 1, 0, 0, 0, 1, None, 0, 0],
-        "TL":  [0, 0, 1, 0, 0, 0, 0, 0, None, 0],
-        "TSM": [0, 0, 0, 0, 1, 0, 1, 0, 1, None]
-    }
-    teams_combined_wins = {}
-    for team in teams_wins_spring:
-        total_wins = []
-        spring_record = teams_wins_spring[team]
-        summer_record = teams_wins_summer[team]
-        for x in range(len(spring_record)):
-            if spring_record[x] is None:
-                total_wins.append(None)
-            else:
-                total_wins.append(spring_record[x] + summer_record[x])
-        teams_combined_wins[team] = total_wins    
+    teams_combined_wins = { # 100 |  C9 | CLG | DIG | EG | FLY | GG | IMT | TL | TSM
+        "100": [None, 1, 2, 3, 1, 2, 1, 2, 1, 1]
+        "C9":  [2, None, 1, 2, 1, 3, 2, 2, 1, 1],
+        "CLG": [0, 1, None, 1, 0, 0, 2, 1, 1, 0],
+        "DIG": [0, 0, 1, None, 3, 3, 2, 2, 0, 2],
+        "EG":  [1, 1, 2, 0, None, 2, 2, 1, 1, 1],
+        "FLY": [0, 0, 3, 0, 0, None, 2, 0, 0, 2],
+        "GG":  [1, 1, 1, 0, 0, 0, None, 1, 0, 0],
+        "IMT": [1, 0, 2, 0, 2, 2, 2, None, 1, 0],
+        "TL":  [1, 2, 2, 3, 1, 2, 2, 1, None, 0],
+        "TSM": [2, 1, 2, 0, 2, 0, 3, 2, 3, None]  
+    }  
     match_num = 0
     for winner in winners:
         teams_standings[winner][0] += 1
