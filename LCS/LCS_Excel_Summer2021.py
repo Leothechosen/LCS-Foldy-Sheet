@@ -3,6 +3,8 @@ import timeit
 from tqdm import tqdm
 import tqdm.contrib.itertools
 import itertools
+import pprint
+pp = pprint.PrettyPrinter(indent=4)
 
 # --Notes--
 # This script generates remaining scenarios in the LCS, specifically Summer 2021. 
@@ -102,7 +104,7 @@ import itertools
 #                              1 game: 2 teams have the same highest Combined Wins
 #                              2 games: All taems have the same Combined Wins
 
-workbook = xlsxwriter.Workbook('C:/DiscordBots/Expirements/LoL Scenarios/LCS/LCS_Scenarios_Summer2021.xlsx')
+workbook = xlsxwriter.Workbook('C:/DiscordBots/Expirements/LoL Scenarios/LCS-Foldy-Sheet/LCS/LCS_Scenarios_Summer2021.xlsx')
 worksheet = workbook.add_worksheet()
 
 two_way_tie_unresolved_start = workbook.add_format({'bottom': 2, 'top': 2, 'left': 2, 'bg_color': 'red'})
@@ -183,7 +185,16 @@ nine_way_ties = 0
 ten_way_ties = 0
 
 matches = [
-    []
+    ["100", "GG"],
+    ["TL", "EG"],
+    ["C9", "DIG"],
+    ["IMT", "FLY"],
+    ["TSM", "CLG"],
+    ["DIG", "TSM"],
+    ["IMT", "GG"],
+    ["TL", "C9"],
+    ["100", "EG"],
+    ["FLY", "CLG"]
 ]
 
 teams_chances_no_tie = {
@@ -261,38 +272,39 @@ for scenario in outcomes:
         row_data.append([col, winner, None])
         col += 1
     sorted_teams = {}
-    teams_standings = { #The order of this list doesn't matter. I like ordering it by how the standings are, though.
-        "C9":  [15, 7],
-        "TSM": [15, 7],
-        "100": [14, 8],
-        "TL":  [14, 8],
-        "DIG": [13, 9],
-        "EG":  [11, 11],
-        "IMT": [10, 12],
-        "FLY": [8, 14],
-        "CLG": [6, 16],
-        "GG":  [4, 18],
+    teams_standings = { #The order of this list doesn't matter. I like ordering it by how the standings are though.
+        "TSM": [29, 14],
+        "100": [28, 15],
+        "EG":  [27, 16],
+        "C9":  [26, 17],
+        "TL":  [26, 17],
+        "DIG": [22, 21],
+        "IMT": [20, 23],
+        "FLY": [13, 30],
+        "GG":  [13, 30],
+        "CLG": [11, 32]
     }
+
     teams_combined_wins = { # 100 |  C9 | CLG | DIG | EG | FLY | GG | IMT | TL | TSM
-        "100": [None, 1, 2, 3, 1, 2, 1, 2, 1, 1]
-        "C9":  [2, None, 1, 2, 1, 3, 2, 2, 1, 1],
-        "CLG": [0, 1, None, 1, 0, 0, 2, 1, 1, 0],
-        "DIG": [0, 0, 1, None, 3, 3, 2, 2, 0, 2],
-        "EG":  [1, 1, 2, 0, None, 2, 2, 1, 1, 1],
-        "FLY": [0, 0, 3, 0, 0, None, 2, 0, 0, 2],
-        "GG":  [1, 1, 1, 0, 0, 0, None, 1, 0, 0],
-        "IMT": [1, 0, 2, 0, 2, 2, 2, None, 1, 0],
-        "TL":  [1, 2, 2, 3, 1, 2, 2, 1, None, 0],
-        "TSM": [2, 1, 2, 0, 2, 0, 3, 2, 3, None]  
+        "100": [None, 2, 4, 4, 2, 5, 2, 3, 4, 2],
+        "C9":  [3, None, 4, 4, 1, 4, 4, 3, 2, 1],
+        "CLG": [1, 1, None, 2, 1, 0, 3, 1, 1, 1],
+        "DIG": [1, 0, 3, None, 3, 5, 3, 3, 1, 3],
+        "EG":  [2, 4, 4, 2, None, 4, 4, 2, 2, 3],
+        "FLY": [0, 1, 4, 0, 1, None, 2, 1, 0, 4],
+        "GG":  [2, 1, 2, 2, 1, 3, None, 1, 1, 0],
+        "IMT": [2, 2, 4, 2, 3, 3, 3, None, 1, 0],
+        "TL":  [1, 2, 4, 4, 2, 5, 4, 4, None, 0],
+        "TSM": [3, 4, 3, 1, 2, 1, 5, 5, 5, None]  
     }  
     match_num = 0
     for winner in winners:
         teams_standings[winner][0] += 1
-        if winner == matches[match_num][0]: # loser == matches[match_num][1]
+        if winner == matches[match_num][0]:
             loser = matches[match_num][1]
         else:
             loser = matches[match_num][0]
-        teams_combined_wins[winner][list(teams_combined_wins).index(loser)][0] += 1 #Increase winner's wins vs opponent by 1 in teams_combined_wins
+        teams_combined_wins[winner][list(teams_combined_wins).index(loser)] += 1 #Increase winner's wins vs opponent by 1 in teams_combined_wins
         teams_standings[loser][1] += 1 # Increase's loser's losses by one in teams_standings
         match_num += 1
     ordinal = 1
@@ -334,7 +346,7 @@ for scenario in outcomes:
             team_1, team_2, team_3 = teams_in_ordinal
             team_1_aggregate = teams_combined_wins[team_1][list(teams_combined_wins).index(team_2)] + teams_combined_wins[team_1][list(teams_combined_wins).index(team_3)]
             team_2_aggregate = teams_combined_wins[team_2][list(teams_combined_wins).index(team_1)] + teams_combined_wins[team_2][list(teams_combined_wins).index(team_3)]
-            team_3_aggregate = teams_combined_wins[team_3][list(teams_combined_wins).index(team_1)] + teams_combined_wins[team_3][list(teams_combined_wins).indeX(team_2)]
+            team_3_aggregate = teams_combined_wins[team_3][list(teams_combined_wins).index(team_1)] + teams_combined_wins[team_3][list(teams_combined_wins).index(team_2)]
             teams_aggs_dict = {team_1: team_1_aggregate, team_2: team_2_aggregate, team_3: team_3_aggregate}
             sorted_teams_aggs_dict = {}
             for team in sorted(teams_aggs_dict, key=teams_aggs_dict.get, reverse=True):
@@ -1867,11 +1879,17 @@ workbook.close()
 ws_close_stop = timeit.default_timer()
 teams_chances_start = timeit.default_timer()
 no_tie_output, tie_output, unknown_output, worst_finish_output = "", "", "", ""
+no_tie_reddit_output = "--- | 1st | 2nd | 3rd | 4th | 5th | 6th | 7th | 8th | 9th | 10th\n---|---|----|----|----|----|----|----|----|----|----|----\n"
+tie_reddit_output = "--- | 1st | 2nd | 3rd | 4th | 5th | 6th | 7th | 8th | 9th | 10th\n---|---|----|----|----|----|----|----|----|----|----|----\n"
+worst_finish_reddit_output = "--- | 1st | 2nd | 3rd | 4th | 5th | 6th | 7th | 8th | 9th | 10th\n---|---|----|----|----|----|----|----|----|----|----|----\n"
 for team in teams_standings:
     no_tie_output += f"{team}: {teams_chances_no_tie[team]}\n"
     tie_output += f"{team}: {teams_chances_tie[team]}\n"
     unknown_output += f"{team}: {teams_chances_unknown[team]}\n"
     worst_finish_output += f"{team}: {teams_worst_finish_in_ties[team]}\n"
+    no_tie_reddit_output += f"{team} | {teams_chances_no_tie[team][0]} | {teams_chances_no_tie[team][1]} | {teams_chances_no_tie[team][2]} | {teams_chances_no_tie[team][3]} | {teams_chances_no_tie[team][4]} | {teams_chances_no_tie[team][5]} | {teams_chances_no_tie[team][6]} | {teams_chances_no_tie[team][7]} | {teams_chances_no_tie[team][8]} | {teams_chances_no_tie[team][9]}\n"
+    tie_reddit_output += f"{team} | {teams_chances_tie[team][0]} | {teams_chances_tie[team][1]} | {teams_chances_tie[team][2]} | {teams_chances_tie[team][3]} | {teams_chances_tie[team][4]} | {teams_chances_tie[team][5]} | {teams_chances_tie[team][6]} | {teams_chances_tie[team][7]} | {teams_chances_tie[team][8]} | {teams_chances_tie[team][9]}\n"
+    worst_finish_reddit_output += f"{team} | {teams_worst_finish_in_ties[team][0]} | {teams_worst_finish_in_ties[team][1]} | {teams_worst_finish_in_ties[team][2]} | {teams_worst_finish_in_ties[team][3]} | {teams_worst_finish_in_ties[team][4]} | {teams_worst_finish_in_ties[team][5]} | {teams_worst_finish_in_ties[team][6]} | {teams_worst_finish_in_ties[team][7]} | {teams_worst_finish_in_ties[team][8]} | {teams_worst_finish_in_ties[team][9]}\n"
 print("Chances of endings in Nth place - No Tiebreakers")
 print(no_tie_output)
 print("\nChances of playing for Nth place in Tiebreakers")
@@ -1880,6 +1898,15 @@ print("\nUnknown (Tied SoV in tiebreakers)")
 print(unknown_output)
 print("\nWorst place a team can finish in ties")
 print(worst_finish_output)
+print("\nWorst place a team can finish in ties")
+print(worst_finish_output)
+print("\n\n#\# of Scenarios where X Team ends in Y Place with no Tiebreakers\n")
+print(no_tie_reddit_output)
+print("\n\n#\# of Scenarios where X Team ties for Y Place\n")
+print(tie_reddit_output)
+print("\n\n#Worst possible finish for each team in ties\n")
+print(worst_finish_reddit_output)
+print("\nCheck out my LCS Foldy Sheet here: https://docs.google.com/spreadsheets/d/15wztDrJMuNxi_UN7YFGk7MmIEZOz9ibzUxXG37sbKbI/edit#gid=1137187199")
 teams_chances_stop = timeit.default_timer()
 ties_start = timeit.default_timer()
 print("2-way ties;", str(two_way_ties))
