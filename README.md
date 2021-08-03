@@ -20,4 +20,4 @@ What the sheets do:
         
 Each file is coded to fit within that split's tiebreaker rules, and newer files likely have optimizations not present in previous files.
 
-Update (August 3rd): So fun fact, xlsxwriter is compatible with xlsxwriter. The time to execute the script is cut in half at 18 matches.
+Update (August 3rd): So fun fact, xlsxwriter is compatible with PyPy. The time to execute the script is cut in half at 18 matches.
