@@ -1,3 +1,5 @@
+#c:\Users\Leosm\Downloads\pypy3.7-v7.3.5-win64\pypy3.exe "c:/DiscordBots/Expirements/LoL Scenarios/LCS-Foldy-Sheet/LCS/LCS_Summer2021_Shorter.py"
+
 import xlsxwriter
 import itertools
 import copy
@@ -151,7 +153,6 @@ def append_row_data(row_data, col, teams, ties=None, sov_ties=None, scenario_num
                     else:
                         row_data.append([col, team, Multiway_tie_partially_resolved_middle])
             col += 1
-
     return row_data, col
 
 matches = [
@@ -417,7 +418,7 @@ for scenario in outcomes:
                             teams_worst_finish_in_ties[team_1][ordinal+1] += 1
                             teams_worst_finish_in_ties[team_2][ordinal+1] += 1                      
         else: #When teams_in_ordinal is greater than 3, they automatically go to tiebreakers. Sort by SOV.
-            if len(teams_in_ordinal) == 4 and ordinal == 2: #If teams are playing for 3rd, there are no tiebreaker game and they're all considered 3rd seed.
+            if len(teams_in_ordinal) == 4 and ordinal == 2: #If teams are playing for 3rd, there are no tiebreaker game and they're all considered 3rd seed. - Special Case
                 row_data, col = append_row_data(row_data, col, teams_in_ordinal, "Resolved")
                 for team in teams_in_ordinal:
                     teams_chances_no_tie[team][ordinal] += 1
@@ -427,95 +428,62 @@ for scenario in outcomes:
             for team in teams_in_ordinal:
                 sovs_dict[team] = teams_sovs[teams_in_ordinal.index(team)]
             sorted_sovs = {}
-            for k in sorted(sovs_dict, key=sovs_dict.get, reverse=True):
+            teams_in_tie = sorted(sovs_dict, key=sovs_dict.get, reverse=True) # Returns list of teams in SOV order descending, but with no grouping or SOV number. ex: ['TSM', 'EG', '100', 'C9']
+            for k in sorted(sovs_dict, key=sovs_dict.get, reverse=True): #Returns dict of SOV nums descending with corresponding teams. Teams with same SOV num are grouped. ex: {'83.0': 'TSM EG', '73.5': '100', '73.0': 'C9'}
                 if sorted_sovs.get(str(sovs_dict.get(k))) == None:
                     sorted_sovs.update({str(sovs_dict.get(k)): k})
                 else:
                     sorted_sovs.update({str(sovs_dict.get(k)): sorted_sovs.get(str(sovs_dict.get(k))) + " " + k})
-            sorted_sov_teams = list(sorted_sovs.values())
-            if len(teams_in_ordinal) == len(sorted_sov_teams): #Means there is no SOV Tie
-                if len(teams_in_ordinal) == 5 and ordinal == 2: #Means that there is a definite bottom 2 in the 5-way-tie, leading to the Top 3 teams being locked in for 3rd.
-                    print("5 way tie for 3rd with no tied SOVs")
-                    print(scenario_num)
-                    print(teams_in_ordinal)
-                    print(sorted_sov_teams)
-                    print("\n")
-                    row_data, col = append_row_data(row_data, col, sorted_sov_teams, ["Locked", "Locked", "Locked", None, None])
-                    for team in sorted_sov_teams[:3]:
-                        teams_chances_no_tie[team][ordinal] += 1
-                    for team in sorted_sov_teams[3:]:
-                        teams_chances_tie[team][ordinal] += 1
-                        teams_worst_finish_in_ties[team][ordinal+4] += 1
-                    continue
-                elif len(teams_in_ordinal) == 6 and ordinal == 2: #Means that there is a definite Top 2 in the 6-way-tie. leading to the Top 2 teams being locked in for 3rd.
-                    print("6 way tie for 3rd with no tied SOVs")
-                    print(scenario_num)
-                    print(teams_in_ordinal)
-                    print(sorted_sov_teams)
-                    print("\n")
-                    row_data, col = apprend_row_data(row_data, col, sorted_sov_teams, ["Locked", "Locked", None, None, None, None])
-                    teams_chances_no_tie[sorted_sov_teams[0]][ordinal] += 1
-                    teams_chances_no_tie[sorted_sov_teams[1]][ordinal] += 1
-                    for team in sorted_sov_teams[2:]:
-                        teams_chances_tie[team][ordinal] += 1
-                        teams_worst_finish_in_ties[team][ordinal+5] += 1
-                    continue
-                #There are more of these, but there's never been more than a 5-way-tie in the last 15 matches of the LCS, so keeping it capped to 6 is fine.
-                else:
-                    row_data, col = append_row_data(row_data, col, sorted_sov_teams, "Unresolved")
-            else: #There is an SOV tie
-                teams_in_tie = []
+            sorted_sov_teams = list(sorted_sovs.values()) # Returns list of teams in descending SOV number. No numbers. Teams with same SOV num are grouped. ex: ["TSM EG", "100", "C9"]
+            if len(teams_in_tie) == len(sorted_sov_teams): # No SOV Ties
+                sov_ties = None
+            else: # Creates list:sov_ties that contain whether or not teams are in an SOV tie. Passed to append_row_data
                 sov_ties = []
                 new_sov = False
-                for teams in sorted_sov_teams:
-                    x = teams.split()
-                    for team in range(len(x)):
-                        teams_in_tie.append(x[team])
+                for team in sorted_sov_teams:
                     if len(teams.split()) == 1:
                         sov_ties.append(False)
                     else:
-                        try:
-                            if sov_ties[-1] is True:
-                                new_sov = True
-                        except IndexError: #sov_ties[-1] is going to throw an error if sov_ties is empty, so lets ignore it.
+                        if sov_ties == []:
                             pass
+                        elif sov_ties[-1] is True:
+                            new_sov = True
                         for team in teams.split():
                             if new_sov is True:
                                 sov_ties.append("New")
                                 new_sov = False
                             else:
                                 sov_ties.append(True)
-                if len(teams_in_ordinal) == 5 and ordinal == 2:
-                    if (len(sorted_sov_teams[-1]) == 2) or (len(sorted_sov_teams[-1]) == 1 and len(sorted_sov_teams[-2]) == 1): #Means that there is a definite bottom 2 in the 5-way-tie, leading to the Top 3 teams being locked in for 3rd.
-                        print("5 way tie for 3rd with tied SOVs")
-                        print(scenario_num)
-                        print(teams_in_tie)
-                        print(sorted_sov_teams)
-                        print("\n")
-                        row_data, col = append_row_data(row_data, col, teams_in_tie, ["Locked", "Locked", "Locked", None, None], sov_ties)
-                        for team in teams_in_tie[0:3]:
-                            teams_chances_no_tie[team][ordinal] += 1
-                        for team in teams_in_tie[3:]:
-                            teams_chances_tie[team][ordinal] += 1
-                            teams_worst_finish_in_ties[ordinal+4] += 1
-                        continue
-                elif len(teams_in_ordinal) == 6 and ordinal == 2:
-                    if (len(sorted_sov_teams[0]) == 2) or (len(sorted_sov_teams[0]) == 1 and len(sorted_sov_teams[1]) == 1): #Means there is a definite top 2 in the 6-way-tie, leading to the Top 2 teams being locked in for 3rd
-                        print("6 way tie for 3rd with tied SOVs")
-                        print(scenario_num)
-                        print(teams_in_tie)
-                        print(sorted_sov_teams)
-                        print("\n")
-                        row_data, col = append_row_data(row_data, col, teams_in_tie, ["Locked", "Locked", None, None, None, None], sov_ties)
-                        teams_chances_no_tie[teams_in_tie[0]][ordinal] += 1
-                        teams_chances_no_tie[teams_in_tie[1]][ordinal] += 1
-                        for team in teams_in_tie[2:]:
-                            teams_chances_tie[team][ordinal] += 1
-                            teams_worst_finish_in_ties[team][ordinal+5] += 1
-                        continue
-                #There are more of these, but there's never been more than a 5-way-tie in the last 15 matches of the LCS, so keeping it capped to 6 is fine.
+            if len(teams_in_ordinal) == 5 and ordinal == 2: #5-way-tie for 3rd - Special Case
+                if sov_ties is None: #No SOV tie, means that there is a definite bottom 2. Top 3 teams are locked in 3rd.
+                    print(f"5 way tie for 3rd with no tied SOVs - Scenario {scenario_num} - Teams {teams_in_tie} - Sorted SOV Teams - {sorted_sov_teams}")
+                elif (len(sorted_sov_teams[-1].split()) == 2) or (len(sorted_sov_teams[-1].split()) == 1 and len(sorted_sov_teams[-2].split()) == 1): #Means that there is a definite bottom 2. Top 3 teams being locked in for 3rd.
+                    print(f"5 way tie for 3rd with tied SOVs - Scenario {scenario_num} - Teams {teams_in_tie} - Sorted SOV Teams - {sorted_sov_teams}")
                 else:
-                    row_data, col = append_row_data(row_data, col, teams_in_tie, "Unresolved", sov_ties, scenario_num)
+                    print(f"5-way-tie for 3rd but something is wrong - Scenario {scenario_num} - Teams {teams_in_tie} - Sorted SOV Teams - {sorted_sov_teams}")
+                row_data, col = append_row_data(row_data, col, sorted_sov_teams, ["Locked", "Locked", "Locked", None, None], sov_ties)
+                for team in sorted_sov_teams[:3]:
+                    teams_chances_no_tie[team][ordinal] += 1
+                for team in sorted_sov_teams[3:]:
+                    teams_chances_tie[team][ordinal] += 1
+                    teams_worst_finish_in_ties[team][ordinal+4] += 1
+                continue
+            elif len(teams_in_ordinal) == 6 and ordinal == 2: #6-way-tie for 3rd - Special Case
+                if sov_ties is None: #No SOV tie, means that there is a definite Top 2. Top 2 are locked in for 3rd
+                    print(f"6 way tie for 3rd with no tied SOVs - Scenario {scenario_num} - Teams {teams_in_tie} - Sorted SOV Teams - {sorted_sov_teams}")
+                elif (len(sorted_sov_teams[0].split()) == 2) or (len(sorted_sov_teams[0].split()) == 1 and len(sorted_sov_teams[1].split()) == 1):
+                    print(f"6 way tie for 3rd with tied SOVs - Scenario {scenario_num} - Teams {teams_in_tie} - Sorted SOV Teams - {sorted_sov_teams}")
+                else:
+                    print(f"6-way-tie for 3rd but something is wrong - Scenario {scenario_num} - Teams {teams_in_tie} - Sorted SOV Teams - {sorted_sov_teams}")
+                row_data, col = append_row_data(row_data, col, sorted_sov_teams, ["Locked", "Locked", None, None, None, None], sov_ties)
+                teams_chances_no_tie[sorted_sov_teams[0]][ordinal] += 1
+                teams_chances_no_tie[sorted_sov_teams[1]][ordinal] += 1
+                for team in sorted_sov_teams[2:]:
+                    teams_chances_tie[team][ordinal] += 1
+                    teams_worst_finish_in_ties[team][ordinal+5] += 1
+                continue
+            else: #There are more special cases, however there's never been a 6-way-tie possible in the last 15 matches of the LCS, which is when my foldy sheet is posted, so no real need to write it out.
+                row_data, col = append_row_data(row_data, col, teams_in_tie, "Unresolved", sov_ties)
             if len(teams_in_ordinal) == 4:
                 if ordinal == 2:
                     pass
