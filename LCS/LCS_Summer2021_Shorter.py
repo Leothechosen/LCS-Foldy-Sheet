@@ -177,60 +177,16 @@ matches = [
 ]
 
 ties = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0] #The first 0 will always be 0, since there's no such thing as 1-way-ties
-teams_chances_no_tie = {
-    "C9":  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "DIG": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "TSM": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "100": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "TL":  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "EG":  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "IMT": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "FLY": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "CLG": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "GG":  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-}
+teams_chances_no_tie = {team:[0]*10 for team in ["C9", "DIG", "TSM", "100", "TL", "EG", "IMT", "FLY", "CLG", "GG"]}
 
-teams_chances_tie = {
-    "C9":  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "DIG": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "TSM": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "100": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "TL":  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "EG":  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "IMT": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "FLY": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "CLG": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "GG":  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-}
+teams_chances_tie = {team:[0]*10 for team in ["C9", "DIG", "TSM", "100", "TL", "EG", "IMT", "FLY", "CLG", "GG"]}
 
-teams_worst_finish_in_ties = {
-    "C9":  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "DIG": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "TSM": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "100": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "TL":  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "EG":  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "IMT": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "FLY": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "CLG": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "GG":  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-}
+teams_worst_finish_in_ties = {team:[0]*10 for team in ["C9", "DIG", "TSM", "100", "TL", "EG", "IMT", "FLY", "CLG", "GG"]}
 
 # In cases where there is a multiway tie for a place where not all the TB games need to be placed, and SoV is needed to determine tiebreaker order, 
 # if some or all SoVs are equal, it's not known to this script if a team will need to play a tiebreaker game
 # As such, teams_chances_unknown lists where a team could potentially be playing for with a tb game, but it's not guaranteed.
-teams_chances_unknown = { 
-    "C9":  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "DIG": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "TSM": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "100": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "TL":  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "EG":  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "IMT": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "FLY": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "CLG": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "GG":  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-}
+teams_chances_unknown = {team:[0]*10 for team in ["C9", "DIG", "TSM", "100", "TL", "EG", "IMT", "FLY", "CLG", "GG"]}
 
 start = timeit.default_timer()
 
