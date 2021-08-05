@@ -19,3 +19,5 @@ What the sheets do:
         - Teams chances of finishing in the worst place possible in tiebreakers (Used to determine if X team has locked certain spots).
         
 Each file is coded to fit within that split's tiebreaker rules, and newer files likely have optimizations not present in previous files.
+
+Update (August 3rd): So fun fact, xlsxwriter is compatible with PyPy. The time to execute the script is cut in half at 18 matches.
