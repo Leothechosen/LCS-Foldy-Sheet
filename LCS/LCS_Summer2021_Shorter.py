@@ -177,16 +177,13 @@ matches = [
 ]
 
 ties = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0] #The first 0 will always be 0, since there's no such thing as 1-way-ties
-teams_chances_no_tie = {team:[0]*10 for team in ["C9", "DIG", "TSM", "100", "TL", "EG", "IMT", "FLY", "CLG", "GG"]}
 
-teams_chances_tie = {team:[0]*10 for team in ["C9", "DIG", "TSM", "100", "TL", "EG", "IMT", "FLY", "CLG", "GG"]}
-
-teams_worst_finish_in_ties = {team:[0]*10 for team in ["C9", "DIG", "TSM", "100", "TL", "EG", "IMT", "FLY", "CLG", "GG"]}
+teams = ["C9", "DIG", "TSM", "100", "TL", "EG", "IMT", "FLY", "CLG", "GG"]
+teams_chances_no_tie, teams_chances_tie, teams_worst_finish_in_ties, teams_chances_unknown = {team:[0]*10 for team in teams}, {team:[0]*10 for team in teams}, {team:[0]*10 for team in teams}, {team:[0]*10 for team in teams}
 
 # In cases where there is a multiway tie for a place where not all the TB games need to be placed, and SoV is needed to determine tiebreaker order, 
 # if some or all SoVs are equal, it's not known to this script if a team will need to play a tiebreaker game
 # As such, teams_chances_unknown lists where a team could potentially be playing for with a tb game, but it's not guaranteed.
-teams_chances_unknown = {team:[0]*10 for team in ["C9", "DIG", "TSM", "100", "TL", "EG", "IMT", "FLY", "CLG", "GG"]}
 
 start = timeit.default_timer()
 
