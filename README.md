@@ -1,6 +1,8 @@
 # LCS-Foldy-Sheet 2022
 Unofficial LCS Foldy Sheet Generator
 
+Featured on the LCS Broadcast during Week 9 of the Spring 2021 season: https://youtube.com/clip/UgkxyWB4fjXvv68GCKoojTSwLIGSzCDoW48w
+
 Required packages:
   - xlxswriter
   - itertools
