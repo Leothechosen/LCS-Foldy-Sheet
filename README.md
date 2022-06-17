@@ -11,8 +11,8 @@ Optional:
 What the sheets do:
    1. Generates every single possible scenario of which teams win each match
    2. Takes each scenario and calculate any ties, and if those ties need tiebreakers.
-   3. Outputs data to an .xlsx file, known as a "Foldy Sheet"
-   4. Outputs lists/arrays indicating the following:
+   3. Writes data to an .xlsx file, known as a "Foldy Sheet"
+   4. Prints lists/arrays indicating the following:
         - Teams chances of ending in Nth place with no tiebreaker games played. 
         - Teams chances of ending tied for Nth place with tiebreaker games played.
         - Teams chances of finishing in the worst place possible in tiebreakers (Used to determine if X team has locked certain spots).
